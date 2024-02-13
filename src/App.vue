@@ -8,15 +8,24 @@
         :height="cellSize" fill='black'
         stroke='blue' 
         stroke-width='1' />
-      <text v-if="cell.collapsed == true && cell.option != null" 
+      <text v-if="cell.seed == true" 
         :x="cell.col * cellSize + (cellSize - 60)/2"
         :y="cell.row * cellSize + (cellSize + 60)/2" 
-        stroke='yellow' 
+
+        fill='purple'  
         stroke-width='1'
         font-size='100px'>
         {{ cell.option }}
       </text>
-      <text v-if="cell.collapsed == false" 
+      <text v-if="cell.collapsed == true && cell.option != null && cell.seed == false" 
+        :x="cell.col * cellSize + (cellSize - 60)/2"
+        :y="cell.row * cellSize + (cellSize + 60)/2" 
+        stroke='white' 
+        stroke-width='1'
+        font-size='100px'>
+        {{ cell.option }}
+      </text>
+      <text v-if="cell.collapsed == false && cell.seed == false" 
         :x="cell.col * cellSize + 20"
         :y="cell.row * cellSize + 30" 
         stroke='green' 
@@ -29,12 +38,12 @@
     <line :x1="cellSize * 6" :y1="0" :x2="cellSize * 6" :y2="cellSize * 9" style="stroke:rgb(255,0,0);stroke-width:3" />
     <line :x1="0" :y1="cellSize * 3" :x2="cellSize * 9" :y2="cellSize * 3" style="stroke:rgb(255,0,0);stroke-width:3" />
     <line :x1="0" :y1="cellSize * 6" :x2="cellSize * 9" :y2="cellSize * 6" style="stroke:rgb(255,0,0);stroke-width:3" />
-    <line :x1="0" :y1="0" :x2="0" :y2="cellSize * 9" style="stroke:rgb(225, 255, 0);stroke-width:3" />
-    <line :x1="0" :y1="0" :x2="cellSize * 9" :y2="0" style="stroke:rgb(225, 255, 0);stroke-width:3" />
+    <line :x1="0" :y1="0" :x2="0" :y2="cellSize * 9" style="stroke:rgb(0, 255, 0);stroke-width:3" />
+    <line :x1="0" :y1="0" :x2="cellSize * 9" :y2="0" style="stroke:rgb(0, 255, 0);stroke-width:3" />
     <line :x1="0" :y1="cellSize * 9" :x2="cellSize * 9" :y2="cellSize * 9"
-      style="stroke:rgb(225, 255, 0);stroke-width:3" />
+      style="stroke:rgb(0, 255, 0);stroke-width:3" />
     <line :x1="cellSize * 9" :y1="0" :x2="cellSize * 9" :y2="cellSize * 9"
-      style="stroke:rgb(225, 255, 0);stroke-width:3" />
+      style="stroke:rgb(0, 255, 0);stroke-width:3" />
   </svg>
   <div>
     <button @click="randomSet">RandomSet</button>
@@ -60,7 +69,9 @@ export default {
       rows: 9,
       cols: 9,
       options: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-      resetCount: 20,
+      resetCount: 10,
+    
+
     }
   },
 
@@ -79,6 +90,7 @@ export default {
             options: [1, 2, 3, 4, 5, 6, 7, 8, 9],
             displayOptions: [...this.options], 
             collapsed: false,
+            seed: false,
           });
         }
       }
@@ -99,6 +111,7 @@ export default {
         x.displayOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9];
         x.option = null;
         x.collapsed = false;
+        x.seed = false;
       });
     },
 
@@ -120,6 +133,7 @@ export default {
           let randomOption = availableOptions[Math.floor(Math.random() * availableOptions.length)];
           cell.option = randomOption;
           cell.collapsed = true;
+          cell.seed = true;
 
           // ????
           neighbors.forEach(neighbor => {
@@ -180,7 +194,7 @@ export default {
           clearInterval(this.timer);
           this.timer = null;
         }
-      }, 100);
+      }, 30);
     },
 
     calcStop() {
